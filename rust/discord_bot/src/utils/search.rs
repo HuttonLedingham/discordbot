@@ -1,12 +1,9 @@
-use rusty_ytdl::Video;
-use rusty_ytdl::search::{YouTube, SearchResult, self, SearchOptions};
+use rusty_ytdl::search::{YouTube, SearchResult};
 use std::collections::HashMap;
-use rusty_ytdl::search::Playlist;
 use tokio;
 use crate::Error;
 use crate::commands::music::Song;
 use serde_json;
-use std::process::Stdio;
 
 
 
@@ -39,7 +36,7 @@ pub async fn yt_query(query: &str) -> Result<Vec<Song>, Error> {
             });
             tasks.insert(url, task);
         }
-        for (url, task) in tasks {
+        for (_url, task) in tasks {
             if let Ok(song) = task.await {
                 vec_result.push(song);
             }

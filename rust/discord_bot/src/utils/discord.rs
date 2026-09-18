@@ -1,4 +1,4 @@
-use crate::{Context, Error};
+use crate::{Error};
 use poise::serenity_prelude as serenity;
 
 pub async fn resolve_reply(

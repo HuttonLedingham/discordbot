@@ -1,16 +1,13 @@
 use poise::serenity_prelude as serenity;
-use serenity::client::Context as SerenityContext;
 use songbird::input::YoutubeDl;
 use songbird::events::{Event, EventContext, EventHandler as VoiceEventHandler, TrackEvent};
 use serenity::{async_trait};
 use songbird::tracks::TrackHandle;
 
-use crate::{Context, Error, Data};
+use crate::{Context, Error};
 use crate::utils::search::{yt_query};
 use std::collections::VecDeque;
 use std::sync::Arc;
-use serenity::model::id::{GuildId};
-use std::collections::HashMap;
 use reqwest::Client as HttpClient;
 use std::sync::Mutex;
 

@@ -4,27 +4,21 @@ use std::env;
 use dotenvy::from_path;
 use songbird::SerenityInit;
 
-use songbird::events::{Event, EventContext, EventHandler as VoiceEventHandler, TrackEvent};
 use serenity::model::id::GuildId;
-use songbird::tracks::TrackHandle;
-use songbird::input::YoutubeDl;
 use reqwest::Client as HttpClient;
 use std::{
-    collections::{HashMap, VecDeque},
-    env::var,
+    collections::{HashMap},
     sync::{Arc, Mutex},
     time::Duration,
 };
 use commands::music::MusicManager;
-use commands::music::Song;
 use serenity::client::Context as SerenityContext;
 
 use serenity::{
     async_trait,
-    client::{Client, EventHandler},
-    model::{channel::Message, gateway::Ready},
+    client::{EventHandler},
+    model::{gateway::Ready},
     prelude::{GatewayIntents, TypeMapKey},
-    Result as SerenityResult,
 };
 
 use poise::serenity_prelude as serenity;
@@ -94,7 +88,7 @@ async fn main() {
         post_command: |ctx| {
             Box::pin(async move {
                 if let poise::Context::Prefix(prefix_ctx) = ctx {
-                    prefix_ctx.msg.delete(&ctx.http()).await;
+                    let _ = prefix_ctx.msg.delete(&ctx.http()).await;
                 }                
                 println!("Executed command {}!", ctx.command().qualified_name);
             })
@@ -139,10 +133,3 @@ async fn ping(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-
-
-fn check_msg(result: SerenityResult<Message>) {
-    if let Err(why) = result {
-        println!("Error sending message: {:?}", why);
-    }
-}

@@ -1,8 +1,7 @@
 use crate::utils::ffmpeg;
 use poise::serenity_prelude as serenity;
-use serenity::Attachment;
 use poise::CreateReply;
-use crate::{Context, Error, Data};
+use crate::{Context, Error};
 use crate::utils::search::{yt_download};
 use crate::utils::discord::{resolve_reply};
 

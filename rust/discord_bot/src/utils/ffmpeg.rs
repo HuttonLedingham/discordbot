@@ -1,8 +1,7 @@
 use tokio::process::Command;
 use std::process::Stdio;
 use tokio::io::AsyncWriteExt;
-use crate::{Context, Error};
-use rand::Rng; // Brings the Rng trait into scope to unlock helper methods
+use crate::{Error};
 
 pub async fn convert(full_bytes: Vec<u8>,  file_ext: &str, target_duration: Option<f64>, input_filter_complex: Option<&str>, audio_bitrate: Option<u32>, cmd_flags: Option<&str>)
     -> Result<Option<Vec<u8>>, Error> {
@@ -34,7 +33,7 @@ pub async fn convert(full_bytes: Vec<u8>,  file_ext: &str, target_duration: Opti
 
         let mut stdin = process.stdin.take().expect("Failed to open ffprobe stdin");
 
-        let writer = tokio::spawn(async move{
+        let _writer = tokio::spawn(async move{
             stdin.write_all(&video_bytes).await.expect("Failed to write to ffprobe stdin");
         });
 
@@ -197,7 +196,7 @@ async fn run_command(full_bytes: Vec<u8>, cmd: Vec<String>) -> Option<Vec<u8>> {
 
     let mut stdin = ffmpeg.stdin.take().expect("Failed to open stdin");
 
-    let writer = tokio::spawn(async move{
+    let _writer = tokio::spawn(async move{
         stdin.write_all(&full_bytes).await.expect("Failed to write to ffmpeg stdin");
     });
 
