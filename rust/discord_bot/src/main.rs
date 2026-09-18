@@ -100,7 +100,6 @@ async fn main() {
     let framework = poise::Framework::builder()
         .setup(move |ctx, ready, framework| {
             Box::pin(async move {
-                println!("Logged in as {}", ready.user.name);
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
                 Ok(Data {
                     http_client: HttpClient::new(),
