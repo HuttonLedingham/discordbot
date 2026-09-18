@@ -17,7 +17,7 @@ STEAMAPI_KEY = os.getenv("STEAMAPI_KEY")
 datetime_format = "%Y-%m-%d %H:%M:%S"
 
 
-CHANNEL_ID = 411692824027725824  # Replace with your Channel ID
+CHANNEL_ID = int(os.getenv("GOTD_CHANNEL"))  # Replace with your Channel ID
 target_time = time(hour=9, minute=0, second=0, tzinfo=ZoneInfo("America/Denver"))  # MDT is UTC-6
 
 
@@ -34,20 +34,20 @@ class SteamCog(commands.Cog):
         """Fetches a random game from steam and prints it's url and name."""
 
         channel = ctx.channel
-        await self.game(channel=channel)  # Call the game function to send the message
+        await self.game()  # Call the game function to send the message
 
     @tasks.loop(time=target_time)
     async def send_daily_message(self):
         channel = self.bot.get_channel(CHANNEL_ID)
         if channel:
-            await self.game(channel=channel)  # Call the game function to send the message
+            await self.game()  # Call the game function to send the message
 
     @send_daily_message.before_loop
     async def before_daily_message(self):
         await self.bot.wait_until_ready()
    
 
-    async def game(self, channel):
+    async def game(self):
         def fetch_data(url):
             try:
                 response = requests.get(url)
@@ -57,7 +57,7 @@ class SteamCog(commands.Cog):
                 print(f"Error fetching data from Steam API: {e}")
                 return None
 
-
+        channel = self.bot.get_channel(CHANNEL_ID)
         cached_game = self.game_of_the_day_cache.get(str(channel.guild.id))
         list_of_games = []
         last_appid = 0

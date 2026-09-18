@@ -1,20 +1,15 @@
 use crate::utils::utils::{read_json_file, write_json_file, read_hashmap_json_file};
-use poise::serenity_prelude::ChannelId;
 use poise::serenity_prelude as serenity;
 use reqwest::Client;
-use std::collections::HashMap;
-use chrono::{NaiveDateTime, Datelike};
+use chrono::{NaiveDateTime};
 const STEAM_DATA_FOLDER: &str = "../../data/steam_data";
 const DATETIME_FORMAT: &str = "%Y-%m-%d %H:%M:%S";
-const CHANNEL_ID: u64 = 411692824027725824;  // Replace with your Channel ID
-use crate::{Context, Error, Data};
+use crate::{Context, Error};
 use crate::env;
 use rand::seq::IndexedRandom;
 use std::sync::Arc;
 use chrono::{Local, NaiveTime, Duration as ChronoDuration};
 use chrono::TimeZone;
-
-
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -35,12 +30,12 @@ struct GameInfo {
 pub async fn game(
     ctx: Context<'_>
 ) -> Result<(), Error> {
-    let _ = game_of_day(&ctx.serenity_context().http, &ctx.channel_id().to_channel(&ctx.serenity_context()).await.unwrap()).await;
+    let _ = game_of_day(&ctx.serenity_context().http).await;
     Ok(())
 }
 
 
-async fn game_of_day(http: &serenity::Http, channel: &serenity::Channel) -> Result<(), Error> {
+async fn game_of_day(http: &serenity::Http) -> Result<(), Error> {
     async fn fetch_data(url: &str) -> Option<serde_json::Value> {
         match Client::new().get(url).send().await {
             Ok(response) => {
@@ -63,6 +58,14 @@ async fn game_of_day(http: &serenity::Http, channel: &serenity::Channel) -> Resu
             }
         }
     }
+
+    let channel_int = env::var("GOTD_CHANNEL").unwrap_or_default().parse::<u64>().unwrap_or(0);
+    if channel_int == 0 {
+        println!("GOTD_CHANNEL is not set or invalid.");
+        return Ok(());
+    }
+    let channel_id = serenity::ChannelId::new(channel_int);
+    let channel = http.get_channel(channel_id).await?;
 
     let guild_id = channel.clone().guild().unwrap().guild_id.get();
     let game_of_the_day_cache = read_hashmap_json_file(&format!("{}/game_of_the_day.json", STEAM_DATA_FOLDER)).await.unwrap_or_default();
@@ -152,8 +155,7 @@ pub fn start_daily_task(http: Arc<serenity::Http>) {
 
             let wait = (next - now).to_std().unwrap_or(std::time::Duration::ZERO);
             tokio::time::sleep(wait).await;
-            let channel = ChannelId::new(CHANNEL_ID).to_channel(&http).await.unwrap();
-            if let Err(e) = game_of_day(&http, &channel).await {
+            if let Err(e) = game_of_day(&http).await {
                 eprintln!("game_of_day failed: {e}");
             }
         }
