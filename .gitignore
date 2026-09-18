@@ -1,5 +1,5 @@
 target/
-rust.discord_bot.Cargo.lock
+rust/discord_bot/Cargo.lock
 .env
 /data
 /js-build
@@ -8,3 +8,5 @@ __pycache__/
 
 /discord
 /.discord
+
+service_run.sh
