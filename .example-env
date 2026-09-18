@@ -1,0 +1,4 @@
+DISCORD_TOKEN="Token for Discord Bot"
+STEAMAPI_KEY="Token for steam api"
+TEST_GUILD="Guild to test slash commads in"
+CLIENT_ID="Bot's Client ID for slash commands"
