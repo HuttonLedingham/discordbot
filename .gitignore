@@ -1,5 +1,5 @@
-/rust/discord_bot/target
-/Cargo.lock
+target/
+rust.discord_bot.Cargo.lock
 .env
 /data
 /js-build
