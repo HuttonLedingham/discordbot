@@ -24,6 +24,7 @@ Now rust version is up-to-date with python all new updates will only be in Rust.
 2. head to /rust/discord_bot/
 3. Run command `cargo run`
 
-### Note
+### Notes
 
-Must be in directory to run program. If outside env variables will not be found.
+- Must be in directory to run program. If outside env variables will not be found.
+- If getting yt-dlp errors make sure it is updated to the most recent version.
