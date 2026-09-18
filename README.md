@@ -2,7 +2,7 @@
 
 ## Background
 
-Provided a reason to learn discord library in Python and get introduced to Rust for the first time. By first prototyping in Python then translating to Rust.
+Provided a reason to learn discord library in Python and get introduced to Rust for the first time. By first prototyping in Python then translating to Rust. Adding features by just thinking of certain tools I want to learn about, e.g. ffmpeg and steamapi.
 
 Now rust version is up-to-date with python all new updates will only be in Rust.
 
@@ -22,3 +22,7 @@ Make copy of .example.env called .env and fill in all the variables according to
 1. Download rust
 2. head to /rust/discord_bot/
 3. Run command `cargo run`
+
+### Note
+
+Must be in directory to run program. If outside env variables will not be found.
