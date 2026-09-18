@@ -1,0 +1,10 @@
+/rust/discord_bot/target
+/Cargo.lock
+.env
+/data
+/js-build
+link to discord-music-bot.service
+__pycache__/
+
+/discord
+/.discord
