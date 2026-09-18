@@ -8,8 +8,9 @@ Now rust version is up-to-date with python all new updates will only be in Rust.
 
 ## Running the Bot
 
-### Set up env file
-Make copy of .example.env called .env and fill in all the variables according to the name.
+### Setting of the environment
+1. Make copy of .example.env called .env and fill in all the variables according to the name.
+2. Download both `ffmpeg` and `yt-dlp`
 
 ### Discord
 
