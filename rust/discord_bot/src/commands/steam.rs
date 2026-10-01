@@ -30,12 +30,13 @@ struct GameInfo {
 pub async fn game(
     ctx: Context<'_>
 ) -> Result<(), Error> {
-    let _ = game_of_day(&ctx.serenity_context().http).await;
+    let channel = ctx.channel_id().to_channel(&ctx.serenity_context().http).await?;
+    let _ = game_of_day(&ctx.serenity_context().http, &channel).await;
     Ok(())
 }
 
 
-async fn game_of_day(http: &serenity::Http) -> Result<(), Error> {
+async fn game_of_day(http: &serenity::Http, channel: &serenity::Channel) -> Result<(), Error> {
     async fn fetch_data(url: &str) -> Option<serde_json::Value> {
         match Client::new().get(url).send().await {
             Ok(response) => {
@@ -59,13 +60,7 @@ async fn game_of_day(http: &serenity::Http) -> Result<(), Error> {
         }
     }
 
-    let channel_int = env::var("GOTD_CHANNEL").unwrap_or_default().parse::<u64>().unwrap_or(0);
-    if channel_int == 0 {
-        println!("GOTD_CHANNEL is not set or invalid.");
-        return Ok(());
-    }
-    let channel_id = serenity::ChannelId::new(channel_int);
-    let channel = http.get_channel(channel_id).await?;
+
 
     let guild_id = channel.clone().guild().unwrap().guild_id.get();
     let game_of_the_day_cache = read_hashmap_json_file(&format!("{}/game_of_the_day.json", STEAM_DATA_FOLDER)).await.unwrap_or_default();
@@ -155,7 +150,22 @@ pub fn start_daily_task(http: Arc<serenity::Http>) {
 
             let wait = (next - now).to_std().unwrap_or(std::time::Duration::ZERO);
             tokio::time::sleep(wait).await;
-            if let Err(e) = game_of_day(&http).await {
+
+            let channel_int = env::var("GOTD_CHANNEL").unwrap_or_default().parse::<u64>().unwrap_or(0);
+            if channel_int == 0 {
+                println!("GOTD_CHANNEL is not set or invalid.");
+                continue;
+            }
+            let channel_id = serenity::ChannelId::new(channel_int);
+            let channel = match http.get_channel(channel_id).await {
+                Ok(channel) => channel,
+                Err(e) => {
+                    eprintln!("Failed to get channel: {e}");
+                    continue;
+                }
+            };
+
+            if let Err(e) = game_of_day(&http, &channel).await {
                 eprintln!("game_of_day failed: {e}");
             }
         }
