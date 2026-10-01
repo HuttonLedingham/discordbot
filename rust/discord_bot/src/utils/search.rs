@@ -67,18 +67,16 @@ pub async fn yt_query(query: &str) -> Result<Vec<Song>, Error> {
 
 }
 
-pub const DEFAULT_YT_VIDEO_OPTIONS: [&str; 16] = [
+pub const DEFAULT_YT_VIDEO_OPTIONS: [&str; 15] = [
     "-o", "-",  
-    "--format", "bestvideo[height<=360]+bestaudio/best",           // Pre-merged video/audio stream required for stdout/RAM
-    "--quiet",
-    "--no-warnings",
+    "--format", "bestvideo[height<=720]+bestaudio/best",           // Pre-merged video/audio stream required for stdout/RAM
     "--socket-timeout", "15",
     "--retries", "10",
     "--fragment-retries", "10",
     "--skip-unavailable-fragments",
     "--no-playlist",
-    "--merge-output-format", "mkv"
-];
+    "--verbose",
+    "--merge-output-format", "mkv",];
 
 pub async fn yt_download(url: &str) -> Result<Vec<u8>, Error> {
     if url.is_empty() || !url.starts_with("http") {
